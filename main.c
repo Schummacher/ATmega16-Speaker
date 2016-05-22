@@ -10,11 +10,11 @@ My first usefule programing in my life of university.
 #define uchar unsigned char
 #define uint  unsigned int
 #define RS_0  PORTA &= ~(1 << PA2) 	//RS为0
-#define RS_1  PORTA |= (1 << PA2)		//RS为1
+#define RS_1  PORTA |= (1 << PA2)	//RS为1
 #define RW_0  PORTA &= ~(1 << PA3)	//RW为0
 #define RW_1  PORTA |= (1 << PA3)	//RW为1
 #define EN_0  PORTA &= ~(1 << PA4)	//EN为0
-#define EN_1  PORTA |= (1 << PA4)		//EN为1
+#define EN_1  PORTA |= (1 << PA4)	//EN为1
 
 /********以下是函数声明********/
 void delay_us(unsigned int n);
@@ -32,6 +32,7 @@ void delay_us(unsigned  int n){
     return ;
   while (--n);
 }
+
 /********ms延时函数********/
 void Delay_ms(uint xms)
 {
@@ -39,6 +40,7 @@ void Delay_ms(uint xms)
   for(i=0;i<xms;i++)
     for(j=0;j<1140;j++);
 }
+
 /********以下是LCD忙碌检查函数********/
 uchar lcd_busy(){
   uchar result;
@@ -51,6 +53,7 @@ uchar lcd_busy(){
   EN_0;
   return result;
 }
+
 /********以下是写指令寄存器IR函数********/
 void lcd_wcmd(uchar cmd){
   DDRC=0xff;		//PA设为输出
@@ -64,6 +67,7 @@ void lcd_wcmd(uchar cmd){
   delay_us(40);
   EN_0;
 }
+
 /********以下是写寄存器DR函数********/
 void lcd_wdat(uchar dat){
  	DDRC=0xff;		//PA设为输出
@@ -77,11 +81,13 @@ void lcd_wdat(uchar dat){
   delay_us(40);
 	EN_0;
 }
+
 /********以下是LCD清屏函数********/
 void lcd_clr(){
   lcd_wcmd(0x01);       //清除LCD的显示内容
   Delay_ms(5);
 }
+
 /********以下是LCD初始化函数********/
 void lcd_init(){
   Delay_ms(15);             //等待LCD电源稳定
@@ -104,6 +110,7 @@ void lcd_init(){
 	lcd_wcmd(0x01);          //清除LCD的显示内容
   Delay_ms(10);
 }
+
 /********光标定位函数,x为显示列，y为显示行********/
  void LocateXY(uchar x,uchar y){
   if (y == 0)            //第0行显示
@@ -112,6 +119,7 @@ void lcd_init(){
  	 	lcd_wcmd(0xC0 + x);
 }
 
+/******以下为全剧变量声明********/
 unsigned char dir = 0;
 unsigned char voice=0;
 unsigned char *p=&voice;
@@ -119,7 +127,7 @@ unsigned char stand_by=0;
 unsigned char a=0x30;
 unsigned char b=0x30;
 
-void port_init(){
+void port_init(){	//接口初始化
   DDRB=0xF8;
   PORTB=0xff;
   DDRA=0xFF;
@@ -130,13 +138,13 @@ void port_init(){
   PORTD=0xff;
 }
 
-void timer0_init(){
+void timer0_init(){	//计数器初始化
   TCCR0=0x69;
   OCR0=voice;
   SREG=0x80;
 }
 
-void Turn_left(){
+void Turn_left(){	//选扭左旋
   if(*p>0)      *p=*p-5;
   if(a>0x30)    a--;
   else if(b==0x30);
@@ -147,7 +155,7 @@ void Turn_left(){
   }
 }
 
-void Turn_right(){
+void Turn_right(){	//旋钮右旋
   if(*p<255)
   *p=*p+5;
   if(a<0x39){
@@ -160,7 +168,7 @@ void Turn_right(){
   }
 }
 
-void Dir(){
+void Dir(){		//旋钮扫描
   if(dir == 0){
     if(PIN_A & (!PIN_B))
       dir = 2;
@@ -219,10 +227,10 @@ void main(){
     Dir();
     OCR0=voice;
     LocateXY(5,0);
-    lcd_wdat(0b01010110);
-    lcd_wdat(0b01001111);
-    lcd_wdat(0b01001100);
-    lcd_wdat(0b00100000);
+    lcd_wdat(0b01010110);	//V
+    lcd_wdat(0b01001111);	//O
+    lcd_wdat(0b01001100);	//L
+    lcd_wdat(0b00100000);	// 
     lcd_wdat(b);
     lcd_wdat(a);
   }
