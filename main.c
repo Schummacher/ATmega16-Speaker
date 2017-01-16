@@ -1,6 +1,6 @@
 # ATmega16-Speaker
 My first usefule programing in my life of university.
-//包含音量控制 LCD音量显示 以调节好IO口位置 整机使用第一版，但LCD与PWM方向相反
+//包含音量控制 LCD音量显示 以调节好IO口位置
 #include<iom16Av.h>
 #include <macros.h>
 
